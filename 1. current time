@@ -1,0 +1,27 @@
+from tkinter import * # window 용
+from datetime import datetime # 현재시간 가져오기용
+
+def alert():
+    #print(datetime.now())
+    dnow = datetime.now()
+    btn.config(text = dnow)
+
+
+win = Tk() #창 생성
+
+win.geometry("1000x500") # 창 사이즈
+win.title("SG Programing") # 창 제목
+win.option_add("*Font", "맑은고딕 25") # 폰트 종류 및 사이즈
+#win.option_add("*Font", "궁서 20") # 폰트 종류 및 사이즈
+
+btn = Button(win)# 버튼 생성
+#btn = Button(win, text="현재시각")# 버튼 생성
+btn.config(text="현재시각")
+btn.config(width=35, height=3)
+
+
+btn.config(command= alert)
+btn.pack() # 버튼 배치
+win.configure(bg='blue')
+
+win.mainloop()
