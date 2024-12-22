@@ -1,0 +1,60 @@
+from tkinter import * # window 용
+import requests # url parsing 용
+from bs4 import BeautifulSoup   # url parsing 후 깔끔하게 정리 용
+
+win = Tk() #창 생성
+
+win.geometry("1000x2500") # 창 사이즈
+win.title("SG Programing") # 창 제목
+win.option_add("*Font", "맑은고딕 25") # 폰트 종류 및 사이즈
+
+ent = Entry(win) # 입력창 생성
+ent.pack()
+
+def show_number(main_numbers,bonus_number):
+    label = Label(win, text="", font=("맑은고딕 20", 24))
+    label.pack(pady=10)
+    result_text = (
+        "당첨번호 : "
+        f"{', '.join(map(str, main_numbers))}\n\n"
+        "보너스번호 : "
+        f"{bonus_number}"
+    )
+    label.config(text=result_text)
+
+def lotto_p():
+    n = ent.get() # 입력창의 값 가져옴
+    url = "https://www.dhlottery.co.kr/gameResult.do?method=byWin&drwNo={}".format(n)
+    req = requests.get(url) #webpage 다 가져옴
+    #print(req.text)
+
+    soup = BeautifulSoup(req.text, "html.parser") # 보고싶은 정보만 추출
+
+    #txt = soup.find("div", attrs = {"class","win_result"}) # 전체 스크립트 가져오기
+    #print(txt)
+
+    txt = soup.find("div", attrs = {"class","win_result"}).get_text() # text 형태로 보기좋게 가져오기
+    #print(txt)
+
+    lines = txt.splitlines() # txt 를 line 별로 나눔
+
+    # '당첨번호'의 인덱스를 찾고 다음 6개의 줄을 추출
+    start_index = lines.index("당첨번호")
+    numbers = lines[start_index + 2:start_index + 8]
+
+
+    lines_2 = txt.splitlines() # txt 를 line 별로 나눔
+    start_index2 = lines_2.index("보너스")
+    numbers2 = lines_2[start_index2 + 1]
+    print("당첨번호")
+    print(numbers)  # ['7', '11', '24', '26', '27', '37']
+    print("보너스번호")
+    print(numbers2) 
+    show_number(numbers,numbers2)
+
+btn = Button(win)# 버튼 생성
+btn.config(text="로또 당첨 번호 확인")
+btn.config(command = lotto_p)
+btn.pack()
+
+win.mainloop()
